@@ -1,10 +1,39 @@
-# Erdős discrepancy: a ±1 sequence of length 355,049 with discrepancy 3
+# Erdős discrepancy: a ±1 sequence of length 355,897 with discrepancy 3
 
-**C(3) ≥ 355,049: a 49-term tail extension of P. G. Prendergast's 355,000-term sequence, checked by two independent exact checkers.**
+**C(3) ≥ 355,897: a SAT re-solve of the tail of the earlier 355,049-term sequence, checked by two independent exact checkers.**
 
-AlphaEvolve Problem 6.40 asks for long ±1 sequences whose sums along every homogeneous arithmetic progression d, 2d, …, md stay within ±C. For C = 3, Prendergast posted a 355,000-term sequence on [issue #23](https://github.com/google-deepmind/alphaevolve_repository_of_problems/issues/23) and showed that one more term can always be added (C(3) ≥ 355,001). Following his suggestion on that thread, this repository tries a short tail backtrack: his first 355,000 terms are kept exactly, and a depth-first search appends 49 more. It is a small improvement to his construction; most of the credit is his.
+AlphaEvolve Problem 6.40 asks for long ±1 sequences whose sums along every homogeneous arithmetic progression d, 2d, …, md stay within ±C. For C = 3, P. G. Prendergast posted a 355,000-term sequence on [issue #23](https://github.com/google-deepmind/alphaevolve_repository_of_problems/issues/23) and showed that one more term can always be added (C(3) ≥ 355,001). This repository first appended 49 terms to his sequence by tail backtracking (355,049, kept below as the first result). An incremental SAT re-solve of the last 5,000 positions then broke the wall at 355,050 and reached 355,897. The first 350,049 terms are still Prendergast's, unchanged.
 
-## What it shows
+## Current result: 355,897 (2026-11-24)
+
+1. **Mathematical objective.** Maximize N such that x₁, …, x_N ∈ {+1, −1} satisfies |x_d + x_{2d} + … + x_{md}| ≤ 3 for every d ≥ 1 and every md ≤ N.
+2. **Baseline.** 355,049 (this repository, first result, posted on issue #23 on 2026-11-24). Before that, 355,001 (Prendergast).
+3. **Candidate result.** N = 355,897 (+848 over 355,049, +896 over 355,001). `certificate/erdos_d3_n355897_signs.txt`, SHA-256 `b5419d58…4922`.
+4. **Verification.** Exact integer arithmetic, the same two independent checkers (`checkers/edp_checkA.py`, `checkers/edp_checkB.c`). Both pass at discrepancy 3, and both reject a control with the first sign flipped (discrepancy 5). See `logs/checkers_355897.log` and `manifest_n355897.json`. Mathbox computation-audit: finite assertion verified in the stated range.
+5. **Record eligibility.** Venue: the issue #23 thread, which has no minimum step. Same file format (one line of `+`/`-`, no newline). Bar re-scanned 2026-11-24 17:02 UTC: highest claim in the thread was 355,049.
+6. **Novelty.** Improved construction. The method (SAT on a sliding window of free positions) is standard. Literature check: apparently new within the stated scope (issue #23 thread and a web search).
+7. **Search economics.** One CaDiCaL run (window 4,000 after starting at 2,000) gave all 848 terms in 48.5 minutes on one core: 848 satisfiable solves, 2 unsatisfiable, about 17.5 terms per minute. Two side runs (windows 5,000 and 8,000) reached 355,676 and 355,466.
+8. **Decision.** Continue. The run stopped at its time limit, not at a wall.
+
+| Quantity | Value |
+|---|---|
+| Length | 355,897 |
+| Discrepancy (max over all d, m) | 3 |
+| First terms identical to Prendergast's sequence | 350,049 |
+| Positions 350,050–355,049 changed from the 355,049 certificate | 1,010 |
+| Gain over 355,049 | +848 |
+
+### Run the SAT search
+
+```sh
+pip install python-sat
+python3 search/edp_sat.py certificate/erdos_d3_n355049_signs.txt out 2000 5000 1000 120 2900 cadical195
+```
+
+Arguments: input signs, output folder, window min, window max, window step, per-solve seconds (CaDiCaL ignores this limit), total seconds, solver. Each progression gets a 7-state one-hot walk over partial sums −3..3. Positions up to N − W are fixed by assumptions, the length grows by one per satisfiable solve, phases start from the current signs, and the window widens on an unsatisfiable or timed-out solve. Logs of the three runs are in `logs/sat_*.log`.
+
+## First result: 355,049 (tail backtrack)
+
 
 1. **Mathematical objective.** Maximize N such that x₁, …, x_N ∈ {+1, −1} satisfies |x_d + x_{2d} + … + x_{md}| ≤ 3 for every d ≥ 1 and every md ≤ N. C(3) is the largest such N (AlphaEvolve notation).
 2. **Baseline.** 355,000 (Prendergast, issue #23, gist [rev 98bc47d8](https://gist.github.com/pgprendergast/9e2c6d24cf0c28b569990bddb95adf07), SHA-256 `a04938ea…adcb`), extended to 355,001 by his parity argument (11/23/2026). The best published value is 127,645 (Konev–Lisitsa 2014; Le Bras–Gomes–Selman 2014).
@@ -15,7 +44,7 @@ AlphaEvolve Problem 6.40 asks for long ±1 sequences whose sums along every homo
 7. **Search economics.** Two runs of 55 s on one core each (2 cores total), about 3.5 × 10⁹ search nodes per run. Both runs reached 355,049 and stalled there. Gain about 52 terms per wall-clock minute.
 8. **Decision.** Modify the method. The wall is described under Honest limits; the next step is a SAT re-solve of the last few thousand positions, seeded with these signs.
 
-## Numbers
+### Numbers
 
 | Quantity | Value |
 |---|---|
@@ -35,6 +64,8 @@ AlphaEvolve Problem 6.40 asks for long ±1 sequences whose sums along every homo
 
 ## Honest limits
 
+- The 355,897 sequence changes 1,010 of the last 5,000 terms of the 355,049 certificate, so it no longer extends Prendergast's full 355,000 terms; it agrees with them on the first 350,049.
+- The SAT search was stopped by its time limit at 355,897; how far it can go is untested.
 - The gain is small and comes from extending the tail only. Prendergast reported the same pattern (a night of tail extension moved 255,000 to 257,799); his larger gains came from re-solving with the multiplicative rules.
 - The search stalls at 355,050. Its progression sums for d = 45 (+3) and d = 9, 263 (−3) force opposite signs. The terms that set those sums (355,005, 355,041 and 354,787) all lie inside the search window, so the block can be broken in principle, but chronological backtracking does not find the way out in these runs.
 - No Lean proof. The claim rests on the two checkers.
@@ -43,8 +74,10 @@ AlphaEvolve Problem 6.40 asks for long ±1 sequences whose sums along every homo
 ## Run it
 
 ```sh
+python3 checkers/edp_checkA.py certificate/erdos_d3_n355897_signs.txt 3
+cc -O2 -o checkB checkers/edp_checkB.c && ./checkB certificate/erdos_d3_n355897_signs.txt 3
 python3 checkers/edp_checkA.py certificate/erdos_d3_n355049_signs.txt 3
-cc -O2 -o checkB checkers/edp_checkB.c && ./checkB certificate/erdos_d3_n355049_signs.txt 3
+./checkB certificate/erdos_d3_n355049_signs.txt 3
 sha256sum -c SHA256SUMS
 ```
 
@@ -63,13 +96,15 @@ Arguments: input, C, window W (positions after N − W may change), seed, second
 
 | Piece | Where |
 |---|---|
+| Certificate (355,897 signs, current) | `certificate/erdos_d3_n355897_signs.txt` |
 | Certificate (355,049 signs) | `certificate/erdos_d3_n355049_signs.txt` |
 | Alternate certificate (different tail) | `certificate/erdos_d3_n355049_signs_alt.txt` |
 | Checker A (NumPy) | `checkers/edp_checkA.py` |
 | Checker B (C) | `checkers/edp_checkB.c` |
 | Tail backtrack search | `search/edp_tail.c` |
+| SAT window search | `search/edp_sat.py` |
 | Search and checker logs | `logs/` |
-| Computation manifest (Mathbox) | `manifest.json` |
+| Computation manifests (Mathbox) | `manifest.json` (355,049), `manifest_n355897.json` (355,897) |
 | Checksums | `SHA256SUMS` |
 
 ## Method
@@ -80,11 +115,12 @@ Arguments: input, C, window W (positions after N − W may change), seed, second
 
 ## Stack
 
-C (gcc -O3) for the search and checker B; Python 3 with NumPy for checker A. Two CPU cores.
+C (gcc -O3) for the backtrack search and checker B; Python 3 with NumPy for checker A; Python 3 with PySAT and CaDiCaL 1.9.5 for the SAT search. Two to four CPU cores.
 
 ## Sources and credit
 
-- P. G. Prendergast, issue [#23](https://github.com/google-deepmind/alphaevolve_repository_of_problems/issues/23) on google-deepmind/alphaevolve_repository_of_problems, and the 355,000-term sequence in his [gist](https://gist.github.com/pgprendergast/9e2c6d24cf0c28b569990bddb95adf07) (revision 98bc47d8). The first 355,000 terms of the certificate are his, unchanged.
+- P. G. Prendergast, issue [#23](https://github.com/google-deepmind/alphaevolve_repository_of_problems/issues/23) on google-deepmind/alphaevolve_repository_of_problems, and the 355,000-term sequence in his [gist](https://gist.github.com/pgprendergast/9e2c6d24cf0c28b569990bddb95adf07) (revision 98bc47d8). The first 355,000 terms of the 355,049 certificate and the first 350,049 terms of the 355,897 certificate are his, unchanged.
+- A. Ignatiev, A. Morgado, J. Marques-Silva, PySAT; A. Biere et al., CaDiCaL.
 - B. Konev, A. Lisitsa, *Computer-aided proof of Erdős discrepancy properties*, arXiv:1405.3097.
 - R. Le Bras, C. P. Gomes, B. Selman, *On the Erdős discrepancy problem*, arXiv:1407.2510.
 - B. Georgiev et al., *Mathematical exploration and discovery at scale* (AlphaEvolve), arXiv:2511.02864, Problem 6.40.

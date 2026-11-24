@@ -1,0 +1,10 @@
+# Checker runs 2026-11-24T18:13:58Z (355,897 certificate)
+checkA N=355897 discrepancy=3 (first worst d=1) PASS at C=3
+  (checkA 1.375108897 s)
+checkB N=355897 discrepancy=3 (first worst d=1) PASS at C=3
+  (checkB .011998931 s)
+# Control: first sign flipped (expected FAIL)
+checkA N=355897 discrepancy=5 (first worst d=1) FAIL at C=3
+checkB N=355897 discrepancy=5 (first worst d=1) FAIL at C=3
+# Prefix check vs 355,049 certificate
+first 350,049 identical: True | differing in 350,050..355,049: 1010 | newline-free: True

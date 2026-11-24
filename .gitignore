@@ -1,6 +1,9 @@
+__pycache__/
+*.pyc
+.venv/
+node_modules/
+.env
 checkB
 edp_tail
+out/
 out.txt
-__pycache__/
-*.o
-.env

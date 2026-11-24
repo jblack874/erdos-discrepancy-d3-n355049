@@ -1,0 +1,3 @@
+runB (glucose4) stopped 16:44: timed out at 355,050 for W=2000 and 3000 (120 s each)
+16:59 runD started: cadical195, W 3000->8000 step 2500, from snap2 (355,391), total 1900 s
+17:29 L3 final: 355,897 (runA, cadical195, W=4000), checkA+checkB PASS C=3, prefix 1..350049 unchanged, 1010 flips in 350050..355049, sha256 b5419d58...4922

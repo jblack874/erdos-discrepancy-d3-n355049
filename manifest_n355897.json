@@ -1,0 +1,89 @@
+{
+  "schema_version": 1,
+  "claim_id": "erdos-discrepancy-C3-ge-355897",
+  "repository": {
+    "commit": "second commit of jblack874/erdos-discrepancy-d3-n355049 (hash recorded in the #23 comment)",
+    "dirty": false
+  },
+  "command": "python3 checkers/edp_checkA.py certificate/erdos_d3_n355897_signs.txt 3 ; cc -O2 -o checkB checkers/edp_checkB.c && ./checkB certificate/erdos_d3_n355897_signs.txt 3",
+  "environment": {
+    "software": [
+      "Python 3 with NumPy (checker A)",
+      "gcc -O2 (checker B)",
+      "Python 3 with python-sat 1.9.dev25, CaDiCaL 1.9.5 (search only)",
+      "Linux x86_64"
+    ],
+    "hardware": "4-core cloud VM"
+  },
+  "mathematics": {
+    "assertion_tested": "The 355,897-term sign sequence in certificate/erdos_d3_n355897_signs.txt satisfies |x_d + x_2d + ... + x_md| <= 3 for every d >= 1 and md <= 355897; hence C(3) >= 355897.",
+    "coefficient_domain": "integers (exact partial sums of +1/-1 terms)",
+    "conventions": "'+' = +1, '-' = -1, position n = n-th character (1-indexed); C(3) = largest N admitting a discrepancy-3 sequence (AlphaEvolve Problem 6.40 notation)",
+    "inputs": [
+      {
+        "path": "certificate/erdos_d3_n355897_signs.txt",
+        "sha256": "b5419d584761b517082614d9b5b485061b5d494b9d8bc747d5691361b8194922"
+      }
+    ],
+    "bounds": {
+      "N": 355897,
+      "C": 3,
+      "d_range": "1..355897",
+      "m_range": "1..floor(355897/d)"
+    },
+    "non_claims": [
+      "Does not claim C(3) = 355897 or any upper bound",
+      "Does not claim position 355898 is unreachable; the SAT run stopped at its time limit",
+      "No Lean or other formal proof"
+    ]
+  },
+  "randomness": {
+    "used": false,
+    "generator": "none; the SAT search is deterministic given its inputs (CaDiCaL default options, phases from the 355,049 signs); checkers are deterministic",
+    "seed": null
+  },
+  "run": {
+    "started_at": "2026-11-24T18:13:58Z",
+    "runtime_seconds": 1.39,
+    "exit_status": 0
+  },
+  "outputs": [
+    {
+      "path": "logs/checkers_355897.log",
+      "sha256": "f8f9dd55fcbccbd8b59a4b7f9523e070a8397f372e19eae42e2e6ba442d39e90"
+    },
+    {
+      "path": "SHA256SUMS",
+      "sha256": "68428934c7ec3f81ac3de6a0cbda972ec80d948e2ed3676851a20a3bce4ddbde"
+    }
+  ],
+  "checks": [
+    {
+      "name": "checkA (NumPy cumulative sums)",
+      "command": "python3 checkers/edp_checkA.py certificate/erdos_d3_n355897_signs.txt 3",
+      "result": "PASS, discrepancy 3"
+    },
+    {
+      "name": "checkB (C loops, independent)",
+      "command": "./checkB certificate/erdos_d3_n355897_signs.txt 3",
+      "result": "PASS, discrepancy 3"
+    },
+    {
+      "name": "record reproduction",
+      "result": "both checkers pass the 355,049 certificate in this repository (logs/checkers.log)"
+    },
+    {
+      "name": "negative control",
+      "result": "first sign flipped: discrepancy 5, FAIL in both checkers"
+    },
+    {
+      "name": "prefix identity",
+      "result": "first 350,049 characters identical to the 355,049 certificate (and so to Prendergast's file); 1,010 of positions 350,050..355,049 differ"
+    }
+  ],
+  "result": "finite assertion verified in the stated range",
+  "residual_risks": [
+    "Both checkers were written by the same author in one session (no shared code)",
+    "Bar confirmed only from issue #23 (read 2026-11-24 17:02 UTC) and a web search; other venues unchecked"
+  ]
+}
