@@ -1,0 +1,15 @@
+# Checker runs 2026-11-24T15:38:02Z
+checkA N=355049 discrepancy=3 (first worst d=1) PASS at C=3
+  (checkA 1.421209004 s)
+checkB N=355049 discrepancy=3 (first worst d=1) PASS at C=3
+  (checkB .020526410 s)
+checkA N=355049 discrepancy=3 (first worst d=1) PASS at C=3
+  (checkA 1.262767071 s)
+checkB N=355049 discrepancy=3 (first worst d=1) PASS at C=3
+  (checkB .010486119 s)
+# Controls (expected: record PASS, both 355,001 extensions PASS, flipped first sign FAIL)
+rec355000.txt: checkB N=355000 discrepancy=3 (first worst d=1) PASS at C=3
+rec355001p.txt: checkB N=355001 discrepancy=3 (first worst d=1) PASS at C=3
+rec355001m.txt: checkB N=355001 discrepancy=3 (first worst d=1) PASS at C=3
+neg_flip1.txt: checkB N=355000 discrepancy=5 (first worst d=1) FAIL at C=3
+checkA N=355000 discrepancy=5 (first worst d=1) FAIL at C=3

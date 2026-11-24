@@ -1,0 +1,6 @@
+checkB
+edp_tail
+out.txt
+__pycache__/
+*.o
+.env

@@ -1,0 +1,4 @@
+Position 355050 = 2*3*3*3*5*5*263 (48 divisors).
+Partial sums before 355050: S_45 = +3, S_9 = -3, S_263 = -3; every other divisor progression has room.
+x_355050 = +1 breaks d=45; x_355050 = -1 breaks d=9 and d=263.
+Last terms of those progressions before 355050: 355005 (d=45), 355041 (d=9), 354787 (d=263), all inside both search windows.

@@ -1,0 +1,92 @@
+{
+  "schema_version": 1,
+  "claim_id": "erdos-discrepancy-C3-ge-355049",
+  "repository": {
+    "commit": "initial commit of jblack874/erdos-discrepancy-d3-n355049 (hash recorded in the #23 reply)",
+    "dirty": false
+  },
+  "command": "python3 checkers/edp_checkA.py certificate/erdos_d3_n355049_signs.txt 3 ; cc -O2 -o checkB checkers/edp_checkB.c && ./checkB certificate/erdos_d3_n355049_signs.txt 3",
+  "environment": {
+    "software": [
+      "Python 3 with NumPy (checker A)",
+      "gcc -O2 / -O3 (checker B, search)",
+      "Linux x86_64"
+    ],
+    "hardware": "2-core cloud VM, 7 GB RAM"
+  },
+  "mathematics": {
+    "assertion_tested": "The 355,049-term sign sequence in certificate/erdos_d3_n355049_signs.txt satisfies |x_d + x_2d + ... + x_md| <= 3 for every d >= 1 and md <= 355049; hence C(3) >= 355049.",
+    "coefficient_domain": "integers (exact partial sums of +1/-1 terms)",
+    "conventions": "'+' = +1, '-' = -1, position n = n-th character (1-indexed); C(3) = largest N admitting a discrepancy-3 sequence (AlphaEvolve Problem 6.40 notation)",
+    "inputs": [
+      {
+        "path": "certificate/erdos_d3_n355049_signs.txt",
+        "sha256": "a7407cde5584b422962786785b9da3f5261def7bfea3f7d51ed7152a6c107598"
+      },
+      {
+        "path": "certificate/erdos_d3_n355049_signs_alt.txt",
+        "sha256": "715ce27678c83bba3c404abc0d52498ca8dba796356ec0f6d73fa36ca0df2c3a"
+      }
+    ],
+    "bounds": {
+      "N": 355049,
+      "C": 3,
+      "d_range": "1..355049",
+      "m_range": "1..floor(355049/d)"
+    },
+    "non_claims": [
+      "Does not claim C(3) = 355049 or any upper bound",
+      "Does not claim position 355050 is unreachable; only that these searches stalled there",
+      "No Lean or other formal proof"
+    ]
+  },
+  "randomness": {
+    "used": true,
+    "generator": "xorshift64 tie-break in search/edp_tail.c (search only; checkers are deterministic)",
+    "seed": 1
+  },
+  "run": {
+    "started_at": "2026-11-24T15:38:02Z",
+    "runtime_seconds": 1.45,
+    "exit_status": 0
+  },
+  "outputs": [
+    {
+      "path": "logs/checkers.log",
+      "sha256": "d295202f5930eb8c343662340bf8f3ec414efd6fe434286c465297bbe83eae95"
+    },
+    {
+      "path": "SHA256SUMS",
+      "sha256": "ee1652bcd25ca4fa9358a55bcb586a5d65ac2d8005ee0de499aa302878f399f7"
+    }
+  ],
+  "checks": [
+    {
+      "name": "checkA (NumPy cumulative sums)",
+      "command": "python3 checkers/edp_checkA.py certificate/erdos_d3_n355049_signs.txt 3",
+      "result": "PASS, discrepancy 3"
+    },
+    {
+      "name": "checkB (C loops, independent)",
+      "command": "./checkB certificate/erdos_d3_n355049_signs.txt 3",
+      "result": "PASS, discrepancy 3"
+    },
+    {
+      "name": "record reproduction",
+      "result": "both checkers give discrepancy 3 on Prendergast's 355,000 (sha256 a04938ea...adcb) and on both 355,001 extensions"
+    },
+    {
+      "name": "negative control",
+      "result": "first sign flipped: discrepancy 5, FAIL in both checkers"
+    },
+    {
+      "name": "prefix identity",
+      "result": "first 355,000 characters identical to Prendergast's file (cmp)"
+    }
+  ],
+  "result": "finite assertion verified in the stated range",
+  "residual_risks": [
+    "Both checkers were written in the same session (no shared code)",
+    "Bar confirmed only from issue #23, the AlphaEvolve repository and a web search; other venues unchecked"
+  ]
+}
